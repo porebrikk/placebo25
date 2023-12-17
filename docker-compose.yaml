@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./instance/:/root/instance/
+
+  placebo25:
+    depends_on:
+      - sqlite3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
