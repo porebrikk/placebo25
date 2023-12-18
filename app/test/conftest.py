@@ -12,7 +12,7 @@ from main import app
 from common.abstracts import BaseModel
 from common.database import get_db, Base
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./instance/test.db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
@@ -110,24 +110,6 @@ def test_employee(employee_maker: Callable[[], Employee]) -> int:
 @fixture
 def test_role_data(test_department) -> dict[str, Any]:
     return {"name": "test_role", "department_id": test_department}
-
-
-@fixture
-def role_maker(
-        session: Session,
-        test_role_data: dict[str, Any],
-) -> Callable[[], Employee]:
-    created: list[int] = []
-
-    def role_maker_inner() -> Employee:
-        role: Role = Role.get_or_create(session, **test_role_data)
-        created.append(role.id)
-        return role
-
-    yield role_maker_inner
-
-    for role_id in created:
-        delete_by_id(session, role_id, Role)
 
 
 @fixture
